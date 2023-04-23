@@ -3,18 +3,24 @@
 #include <stdbool.h>
 #include <signal.h>
 #include <unistd.h>
+
 #include "dir_op.h"
+#include "file_op.h"
+#include "log.h"
+
+/* Przeniesione do file_op.h i dir_op.h
 
 unsigned int sleep_time = 300; // 5min
 unsigned int big_file_size = 256; // ostatecznie mozna zmienic na wieksza
 bool dir_check = false;
 
+char *SRC_NAME = "", *DST_NAME = "";
+
+*/
 
 
 
-
-
-void sig_handler(int sig) {
+void signalHandler(int sig) {
         printf("Dziala\n");
         if(sig == SIGUSR1)
                 printf("SIGUSR1\n");
@@ -23,58 +29,62 @@ void sig_handler(int sig) {
 
 
 int main(int argc, char **argv){
-        signal(SIGUSR1, sig_handler);
+        //signal(SIGUSR1, sig_handler);
+        //sigaction();
 
-        dir_list *src_list = calloc(1, sizeof(dir_list));
-        dir_list *dst_list = calloc(1, sizeof(dir_list));
 
         for(int i=1; i<argc ;i++){
                 if(argv[i][0] == '-'){
-                        if(argv[i][1] == 't'){
-                                i++;
+                        if(argv[i][1] == 't')
                                 sleep_time = (unsigned int)atoi(argv[i]); 
-                        }
-                        else if(argv[i][1] == 'R'){
-                                i++;
+                        else if(argv[i][1] == 'R')
                                 dir_check = true;
-                        }
-                        else if(argv[i][1] == 's'){
-                                i++;
+                        else if(argv[i][1] == 's')
                                 big_file_size = (unsigned int)atoi(argv[i]);
-                        }
-                        else{
-                                i++;
-                        }
+                        i++;
                 }
-                else if(!src_list){
-                        DIR *src;
-                        if((src = opendir(argv[i])) == NULL){
+                else if(SRC_NAME == ""){
+                        if(stat(argv[i], NULL) == -1){
                                 printf("Unable to open source directory.\n");
                                 return -1;
                         }
-                        push(src_list, src, argv[i]);
+                        SRC_NAME = argv[i];
                 }
-                else if(!dst_list){
-                        dst_dir = opendir(argv[i]);
-                        // jesli nunll blad
+                else if(DST_NAME == ""){
+                        if(stat(argv[i], NULL) == -1){
+                                printf("Unable to open destination directory.\n");
+                                return -1;
+                        }
+                        DST_NAME = argv[i];
                 }
-		else{
+		        else{
                         // za duzo argumentow
+                        // można pominąć
                 }
         }
-        if(dst_dir == NULL){
-                // za malo argumentow
-        }
-        if(source_dir_name == destination_dir_name){
-                //blad
+
+        if(DST_NAME == ""){
+            printf("Not enough arguments.\n");
+            return -1;
         }
 
-        // do testow
-        for(int i=0; i<30; i++){
-                printf("%d\n", i);
-                sleep(1);
+        if(SRC_NAME == DST_NAME){
+            printf("Source directory and destination directory are the same. Please provide correct paths.\n");
+            return -1;
         }
+        
+        f_list *src_list = calloc(1, sizeof(f_list));
+        f_list *dst_list = calloc(1, sizeof(f_list));
 
+        while(1){
+            logAction("wake_up");
+            readDir(&src_list, SRC_NAME);
+            readDir(&dst_list, DST_NAME);
+
+            fileListCompare(&src_list, &dst_list);
+            copyDir(src_list);
+            cleanDir(dst_list);
+        }
 
 
 return 0;

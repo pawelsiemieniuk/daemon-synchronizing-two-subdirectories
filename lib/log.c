@@ -9,7 +9,7 @@
 
 void logAction(char *action)
 {
-	unsigned int flog = open("log.txt", O_WRONLY | O_APPEND | O_CREAT, S_IRWXU | S_IRWXG); // S_IRWXU - user has read, write and execute permission, S_IRWXG - group has read, write and execute permission
+	unsigned int f_log = open("log.txt", O_WRONLY | O_APPEND | O_CREAT, S_IRWXU | S_IRWXG); // S_IRWXU - user has read, write and execute permission, S_IRWXG - group has read, write and execute permission
 	time_t t = time(NULL);
 	struct tm tStruct = *localtime(&t);
 	char currentDate[21];
@@ -18,10 +18,11 @@ void logAction(char *action)
 	strcat(sysArg, currentDate);
 	strcat(sysArg, action);
 	strcat(sysArg, "\n");
-	write(flog, sysArg, strlen(sysArg));
-	close(flog);
+	write(f_log, sysArg, strlen(sysArg));
+	close(f_log);
 }
 
+/*
 void main(int argc, char *argv[])
 {
 	char *src = argv[1];
@@ -47,3 +48,4 @@ void main(int argc, char *argv[])
 
 	return;
 }
+*/
