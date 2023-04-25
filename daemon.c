@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <signal.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "dir_op.h"
 #include "file_op.h"
@@ -17,13 +18,21 @@ bool dir_check = false;
 char *SRC_NAME = "", *DST_NAME = "";
 
 */
-
+unsigned int sleep_time = 300;  // 5min
+pthread_t *bed_t;               //spanie
 
 
 void signalHandler(int sig) {
-        printf("Dziala\n");
-        if(sig == SIGUSR1)
-                printf("SIGUSR1\n");
+        //printf("Dziala\n");
+        if(sig == SIGUSR1){
+                //printf("SIGUSR1\n");
+                pthread_cancel(bed_t);
+        }
+
+}
+
+void bedThread(){
+        sleep(sleep_time);
 }
 
 
@@ -76,6 +85,8 @@ int main(int argc, char **argv){
         f_list *src_list = calloc(1, sizeof(f_list));
         f_list *dst_list = calloc(1, sizeof(f_list));
 
+        bed_t = calloc(1, sizeof(pthread_t));             //spanie
+
         while(1){
             logAction("wake_up");
             readDir(&src_list, SRC_NAME);
@@ -87,6 +98,8 @@ int main(int argc, char **argv){
 
             logAction("sleep");
             
+            pthread_create(bed_t, NULL, bedThread, NULL); //spanie 
+            pthread_join(bed_t);                          //spanie
         }
 
 
