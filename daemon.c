@@ -57,7 +57,7 @@ int main(int argc, char **argv){
                         }
                         DST_NAME = argv[i];
                 }
-		        else{
+		else{
                         // za duzo argumentow
                         // można pominąć
                 }
@@ -82,8 +82,11 @@ int main(int argc, char **argv){
             readDir(&dst_list, DST_NAME);
 
             fileListCompare(&src_list, &dst_list);
-            copyDir(src_list);
-            cleanDir(dst_list);
+            copyDir(&src_list);
+            cleanDir(&dst_list);
+
+            logAction("sleep");
+            
         }
 
 

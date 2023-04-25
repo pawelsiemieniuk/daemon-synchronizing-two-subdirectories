@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <stdbool.h>
 #include "file_op.h"
 
 typedef struct file_info {
@@ -10,19 +11,14 @@ typedef struct file_info {
 typedef struct file_list {
         bool checked;               // czy plik w porównywaniu został sprawdzony (domyślnie 0)
         bool type;                  // rodzaj (plik = 0/katalog = 1)
-        char *path;             // sciezka do pliku
-
-        // zapisanie informacji o pliku lub wskaznika do katalogu w tej samej pamieci
-        union data{
-                struct f_info file_i;
-                struct f_list *sub_dir; 
-        }
+        char *path;                 // sciezka do pliku
+        struct f_info *file_i;
 
         struct f_list *next;
 } f_list;
 
 
-readDir(f_list **list, char *pathname)
+void readDir(f_list **list, char *pathname)
 {
     // DIR *src_dir = opendir(pathname)
     // struct dirent *src_file = readdir(src_dir)
@@ -58,10 +54,10 @@ readDir(f_list **list, char *pathname)
     // }
 }
 
-void copyDir(f_list *src_list){
-        copyFile(src_list->path, src_list->file_i)
+void copyDir(f_list **src_list){
+        copyFile((*src_list)->path, (*src_list)->file_i);
 }
 
-void cleanDir(f_list *dst_list){
+void cleanDir(f_list **dst_list){
 
 }
