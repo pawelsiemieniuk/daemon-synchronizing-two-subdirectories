@@ -19,27 +19,20 @@ char *SRC_NAME = "", *DST_NAME = "";
 
 */
 unsigned int sleep_time = 300;  // 5min
-pthread_t *bed_t;               //spanie
+pthread_t *bed_t;               // Wskaznik na strukture przechowujaca informacje o watku
 
 
-void signalHandler(int sig) {
-        //printf("Dziala\n");
-        if(sig == SIGUSR1){
-                //printf("SIGUSR1\n");
-                pthread_cancel(bed_t);
-        }
+void signalHandler(int sig) { if(sig == SIGUSR1) pthread_cancel(bed_t); }
 
-}
-
-void bedThread(){
-        sleep(sleep_time);
-}
-
+void bedThread() { sleep(sleep_time); }
 
 
 int main(int argc, char **argv){
-        //signal(SIGUSR1, sig_handler);
-        //sigaction();
+
+        struct sigaction *new_act = calloc(1, sizeof(sigaction));
+        new_act->sa_handler = signalHandler;
+
+        sigaction(SIGUSR1, new_act, NULL);
 
 
         for(int i=1; i<argc ;i++){
@@ -76,16 +69,16 @@ int main(int argc, char **argv){
             printf("Not enough arguments.\n");
             return -1;
         }
-
         if(SRC_NAME == DST_NAME){
             printf("Source directory and destination directory are the same. Please provide correct paths.\n");
             return -1;
         }
         
+
         f_list *src_list = calloc(1, sizeof(f_list));
         f_list *dst_list = calloc(1, sizeof(f_list));
 
-        bed_t = calloc(1, sizeof(pthread_t));             //spanie
+        bed_t = calloc(1, sizeof(pthread_t));
 
         while(1){
             logAction("wake_up");
@@ -97,9 +90,8 @@ int main(int argc, char **argv){
             cleanDir(&dst_list);
 
             logAction("sleep");
-            
-            pthread_create(bed_t, NULL, bedThread, NULL); //spanie 
-            pthread_join(bed_t);                          //spanie
+            pthread_create(bed_t, NULL, bedThread, NULL);       // Tworzenie watku
+            pthread_join(*bed_t, NULL);                         // Wstrzymanie procesu do konca watku
         }
 
 
