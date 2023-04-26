@@ -9,7 +9,7 @@
 
 void logAction(char *action)
 {
-	unsigned int f_log = open("log.txt", O_WRONLY | O_APPEND | O_CREAT, S_IRWXU | S_IRWXG); // S_IRWXU - user has read, write and execute permission, S_IRWXG - group has read, write and execute permission
+	unsigned int f_log = open("logs/log.txt", O_WRONLY | O_APPEND | O_CREAT, S_IRWXU | S_IRWXG); // S_IRWXU - user has read, write and execute permission, S_IRWXG - group has read, write and execute permission
 	time_t t = time(NULL);
 	struct tm tStruct = *localtime(&t);
 	char currentDate[21];

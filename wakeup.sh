@@ -5,5 +5,6 @@ then
 	PID=`pidof $1`
 	kill -s SIGUSR1 $PID
 else
-	echo No process name given.
+	PID=`pidof daemon`
+	kill -s SIGUSR1 $PID
 fi

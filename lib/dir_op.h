@@ -1,10 +1,12 @@
 #include <dirent.h>
+#include <unistd.h>
+#include <time.h>
 
 #ifndef DIR_OP
 #define DIR_OP
 
-char *SRC_NAME = "", *DST_NAME = "";
-bool dir_check = false;
+extern char *SRC_NAME, *DST_NAME;
+extern bool dir_check;
 
 typedef struct file_info {
         char    f_name[256];    // nazwa pliku

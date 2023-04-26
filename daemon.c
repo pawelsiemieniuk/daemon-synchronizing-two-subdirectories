@@ -4,27 +4,28 @@
 #include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/stat.h>
 
-#include "dir_op.h"
-#include "file_op.h"
-#include "log.h"
+#include "./lib/file_op.h"
+#include "./lib/dir_op.h"
+#include "./lib/log.h"
 
 /* Przeniesione do file_op.h i dir_op.h
 
-unsigned int sleep_time = 300; // 5min
-unsigned int big_file_size = 256; // ostatecznie mozna zmienic na wieksza
-bool dir_check = false;
+//unsigned int sleep_time = 300; // 5min
+//unsigned int big_file_size = 256; // ostatecznie mozna zmienic na wieksza
+
 
 char *SRC_NAME = "", *DST_NAME = "";
 
 */
-unsigned int sleep_time = 300;  // 5min
+unsigned int sleep_time = 10;  // 5min
 pthread_t *bed_t;               // Wskaznik na strukture przechowujaca informacje o watku
 
 
-void signalHandler(int sig) { if(sig == SIGUSR1) pthread_cancel(bed_t); }
+void signalHandler(int sig) { if(sig == SIGUSR1) pthread_cancel(*bed_t); }
 
-void bedThread() { sleep(sleep_time); }
+void *bedThread() { sleep(sleep_time); }
 
 
 int main(int argc, char **argv){
@@ -38,25 +39,25 @@ int main(int argc, char **argv){
         for(int i=1; i<argc ;i++){
                 if(argv[i][0] == '-'){
                         if(argv[i][1] == 't')
-                                sleep_time = (unsigned int)atoi(argv[i]); 
+                                sleep_time = (unsigned int)atoi(argv[++i]); 
                         else if(argv[i][1] == 'R')
                                 dir_check = true;
                         else if(argv[i][1] == 's')
-                                big_file_size = (unsigned int)atoi(argv[i]);
+                                big_file_size = (unsigned int)atoi(argv[++i]);
                         i++;
                 }
-                else if(SRC_NAME == ""){
-                        if(stat(argv[i], NULL) == -1){
-                                printf("Unable to open source directory.\n");
+                else if(!SRC_NAME){
+                        /*if(stat(argv[i], NULL) == -1){
+                                printf("Unable to open source directory.\n", argv[i]);
                                 return -1;
-                        }
+                        }*/
                         SRC_NAME = argv[i];
                 }
-                else if(DST_NAME == ""){
-                        if(stat(argv[i], NULL) == -1){
+                else if(!DST_NAME){
+                        /*if(stat(argv[i], NULL) == -1){
                                 printf("Unable to open destination directory.\n");
                                 return -1;
-                        }
+                        }*/
                         DST_NAME = argv[i];
                 }
 		else{
@@ -65,7 +66,8 @@ int main(int argc, char **argv){
                 }
         }
 
-        if(DST_NAME == ""){
+
+        if(!DST_NAME){
             printf("Not enough arguments.\n");
             return -1;
         }
@@ -82,11 +84,11 @@ int main(int argc, char **argv){
 
         while(1){
             logAction("wake_up");
-            readDir(&src_list, SRC_NAME);
-            readDir(&dst_list, DST_NAME);
+            //readDir(&src_list, SRC_NAME);
+            //readDir(&dst_list, DST_NAME);
 
-            fileListCompare(&src_list, &dst_list);
-            copyDir(&src_list);
+            //fileListCompare(&src_list, &dst_list);
+            //copyDir(&src_list);
             cleanDir(&dst_list);
 
             logAction("sleep");
@@ -94,6 +96,5 @@ int main(int argc, char **argv){
             pthread_join(*bed_t, NULL);                         // Wstrzymanie procesu do konca watku
         }
 
-
-return 0;
+        return 0;
 }
