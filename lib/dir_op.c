@@ -69,5 +69,13 @@ void copyDir(f_list **src_list){
 }
 
 void cleanDir(f_list **dst_list){
-        
+        f_list *tmp_list = (*dst_list);
+        while(tmp_list)
+        {
+                if(!tmp_list->checked)
+                {
+                        delFile((*dst_list)->path);
+                }
+                tmp_list = tmp_list->next;
+        }
 }
