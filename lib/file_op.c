@@ -42,5 +42,8 @@ void copyFile(char *path, f_info *file_i){
 }
 
 void delFile(char *pathname){
-
+        if(remove(pathname) == 0)
+        {
+            logAction("del_file");
+        }
 }
