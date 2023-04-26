@@ -20,6 +20,7 @@ void logAction(char *action)
 	strcat(sysArg, "\n");
 	write(f_log, sysArg, strlen(sysArg));
 	close(f_log);
+	free(sysArg);
 }
 
 /*

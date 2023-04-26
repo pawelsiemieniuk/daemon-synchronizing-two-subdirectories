@@ -18,7 +18,7 @@ void cpy_mmap(char *path, f_info *finf)
     {
         strcat(dst_path, path[i]);
     }
-    strcat(dst_path, "/");
+    strcat(dst_path, '/');
     strcat(dst_path, fname);
     
     unsigned int src_fd = open(path, O_RDONLY);

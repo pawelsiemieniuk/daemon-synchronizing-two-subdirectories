@@ -11,9 +11,9 @@ unsigned int big_file_size = 256; // ostatecznie mozna zmienic na wieksza
 bool fileCompare(f_info *src_file, f_info *dst_file){
     if(!strcmp(src_file->f_name, dst_file->f_name))
         return false;
-    if((src_file)->f_size == (dst_file)->f_size)
+    if((src_file)->f_size != (dst_file)->f_size)
         return false;
-    if((src_file)->f_mtime == (dst_file)->f_mtime)
+    if((src_file)->f_mtime != (dst_file)->f_mtime)
         return false;
 
     return true;
@@ -23,10 +23,18 @@ void fileListCompare(f_list **src_list, f_list **dst_list){
     f_list *src = (*src_list);
     f_list *dst = (*dst_list);
     
-    
-    while()
-    fileCompare((*src_list)->file_i, (*dst_list)->file_i);
-
+    while(src){
+        while(dst){
+            if(!dst->checked){
+                if(fileCompare(src->file_i, dst->file_i)){
+                    src->checked = true;
+                    dst->checked = true;
+                }
+            }
+            dst = dst->next;
+        }
+        src = src->next;
+    }
 }
 
 void copyFile(char *path, f_info *file_i){
@@ -42,8 +50,8 @@ void copyFile(char *path, f_info *file_i){
 }
 
 void delFile(char *pathname){
-        if(remove(pathname) == 0)
-        {
-            logAction("del_file");
-        }
+    if(remove(pathname) == 0)
+    {
+        logAction("del_file");
+    }
 }

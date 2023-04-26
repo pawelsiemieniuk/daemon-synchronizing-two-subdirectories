@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/stat.h>
+#include <limits.h>
 
 #include "./lib/file_op.h"
 #include "./lib/dir_op.h"
@@ -51,14 +52,14 @@ int main(int argc, char **argv){
                                 printf("Unable to open source directory.\n", argv[i]);
                                 return -1;
                         }*/
-                        SRC_NAME = argv[i];
+                        SRC_NAME = realpath(argv[i], NULL);
                 }
                 else if(!DST_NAME){
                         /*if(stat(argv[i], NULL) == -1){
                                 printf("Unable to open destination directory.\n");
                                 return -1;
                         }*/
-                        DST_NAME = argv[i];
+                        DST_NAME = realpath(argv[i], NULL);
                 }
 		else{
                         // za duzo argumentow
@@ -89,7 +90,7 @@ int main(int argc, char **argv){
 
             //fileListCompare(&src_list, &dst_list);
             //copyDir(&src_list);
-            cleanDir(&dst_list);
+            //cleanDir(&dst_list);
 
             logAction("sleep");
             pthread_create(bed_t, NULL, bedThread, NULL);       // Tworzenie watku
