@@ -2,9 +2,12 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "file_op.h"
+#include "list_op.h"
 //#include "dir_op.h"
 
 char *SRC_NAME = NULL, *DST_NAME = NULL;
@@ -34,41 +37,35 @@ void readDir(f_list **list, char *pathname)
 
         while((src_file = readdir(src_dir)) != NULL)
         {
-                if((strcmp(entry->d_name,".") == 0) || (strcmp(entry->d_name, "..") == 0)) {} //oznaczenia hierarchi plików
-                else
-                {
-                        unsigned char file_type = src_file->d_type;
-                        char filename[256] = src_file->d_name;
+                unsigned char file_type = src_file->d_type;
+                char filename[256] = src_file->d_name;
+                char *file_path = pathname;
+                strcat(file_path, '/');
+                strcat(file_path, filename);
 
-                        struct stat *file_buff;     
-                        lstat(filepath, file_buff);
+                struct stat *file_buff = calloc(1, sizeof(stat));
+                lstat(file_path, file_buff);
 
-                        struct f_info *file_i;
-                        file_i->f_name = filename;
-                        file_i->f_size = file_buff->st_size;
-                        file_i->f_mtime = file_buff->st_mtim.tv_sec;
-
-                        struct f_list *src_list;
-                        if(file_type = DT_REG)
-                                src_list->type = 0;
-                        else 
-                                src_list->type = 1;
-                        src_list->path = pathname;
-
-                        if(src_list->type)
-                        {
-                                src_list->data.file_i = file_i;
-                                char *filepath = pathname + filename;
-                                readDir(list, filepath);
-                        }
-                      //  else
-                       //         src_list->data.sub_dir; tego tutaj nie czaje 
-                }
+                
+                if(file_type == DT_REG){
+                        (*list) = push((*list), 
+                                        pathname, 
+                                        filename, 
+                                        file_buff->st_size, 
+                                        file_buff->st_mtim.tv_sec);
+                }   
+                else if(file_type == DT_DIR)
+                        readDir(list, file_path);
         }
 }
 
 void copyDir(f_list **src_list){
-        copyFile((*src_list)->path, (*src_list)->file_i);
+        f_list *tmp_list = (*src_list);
+        while(tmp_list){
+                if(!tmp_list->checked)
+                        copyFile((*src_list)->path, (*src_list)->file_i);
+                tmp_list = tmp_list->next;
+        }
 }
 
 void cleanDir(f_list **dst_list){

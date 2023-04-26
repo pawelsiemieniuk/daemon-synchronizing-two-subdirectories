@@ -16,7 +16,6 @@ typedef struct file_info {
 
 typedef struct file_list {
         bool  checked;              // czy plik w porównywaniu został sprawdzony (domyślnie 0)
-        bool  type;                 // rodzaj (plik = 0/katalog = 1)
         char *path;                 // sciezka do pliku
         struct f_info *file_i;
 
