@@ -20,7 +20,7 @@
 char *SRC_NAME = "", *DST_NAME = "";
 
 */
-unsigned int sleep_time = 10;  // 5min
+unsigned int sleep_time = 300;  // 5min
 pthread_t *bed_t;               // Wskaznik na strukture przechowujaca informacje o watku
 
 
@@ -40,12 +40,11 @@ int main(int argc, char **argv){
         for(int i=1; i<argc ;i++){
                 if(argv[i][0] == '-'){
                         if(argv[i][1] == 't')
-                                sleep_time = (unsigned int)atoi(argv[++i]); 
+                                sleep_time = (unsigned int)atoi(argv[++i]);
                         else if(argv[i][1] == 'R')
                                 dir_check = true;
                         else if(argv[i][1] == 's')
                                 big_file_size = (unsigned int)atoi(argv[++i]);
-                        i++;
                 }
                 else if(!SRC_NAME){
                         /*if(stat(argv[i], NULL) == -1){
@@ -83,10 +82,19 @@ int main(int argc, char **argv){
 
         bed_t = calloc(1, sizeof(pthread_t));
 
+        printf("-R %d\n", dir_check);
+        printf("-t %d\n", sleep_time);
+        printf("-s %d\n", big_file_size);
+
+        printf("%s\n", SRC_NAME);
+        printf("%s\n", DST_NAME);
+
         while(1){
             logAction("wake_up");
-            //readDir(&src_list, SRC_NAME);
-            //readDir(&dst_list, DST_NAME);
+                printf("---------a\n\n");
+            readDir(&src_list, SRC_NAME);
+                printf("---------a\n\n");
+            readDir(&dst_list, DST_NAME);
 
             //fileListCompare(&src_list, &dst_list);
             //copyDir(&src_list);

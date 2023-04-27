@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdbool.h>
 
 #ifndef DIR_OP
 #define DIR_OP
