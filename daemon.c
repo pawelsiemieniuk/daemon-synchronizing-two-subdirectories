@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE 700
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -6,6 +8,7 @@
 #include <pthread.h>
 #include <sys/stat.h>
 #include <limits.h>
+#include <sys/types.h>
 
 #include "./lib/file_op.h"
 #include "./lib/dir_op.h"
@@ -31,7 +34,7 @@ void *bedThread() { sleep(sleep_time); }
 
 int main(int argc, char **argv){
 
-        struct sigaction *new_act = calloc(1, sizeof(sigaction));
+        struct sigaction *new_act = calloc(1, sizeof(struct sigaction));
         new_act->sa_handler = signalHandler;
 
         sigaction(SIGUSR1, new_act, NULL);
@@ -77,8 +80,10 @@ int main(int argc, char **argv){
         }
         
 
-        f_list *src_list = calloc(1, sizeof(f_list));
-        f_list *dst_list = calloc(1, sizeof(f_list));
+        f_list *src_list = (f_list *)calloc(1, sizeof(f_list));
+        f_list *dst_list = (f_list *)calloc(1, sizeof(f_list));
+        src_list = NULL;
+        dst_list = NULL;
 
         bed_t = calloc(1, sizeof(pthread_t));
 
@@ -91,14 +96,20 @@ int main(int argc, char **argv){
 
         while(1){
             logAction("wake_up");
-                printf("---------a\n\n");
+
             readDir(&src_list, SRC_NAME);
-                printf("---------a\n\n");
             readDir(&dst_list, DST_NAME);
 
-            //fileListCompare(&src_list, &dst_list);
+            fileListCompare(&src_list, &dst_list);
+                
+                f_list *tmp_l = (src_list);
+                while(tmp_l){
+                        f_info *tmp_i = tmp_l->file_i;
+                        printf("%s/%s | %d\n", tmp_l->path, tmp_i->f_name, tmp_l->checked);
+                        tmp_l = tmp_l->next;
+                }
             //copyDir(&src_list);
-            //cleanDir(&dst_list);
+            cleanDir(&dst_list);
 
             logAction("sleep");
             pthread_create(bed_t, NULL, bedThread, NULL);       // Tworzenie watku

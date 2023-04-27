@@ -1,3 +1,5 @@
+
+#include <sys/types.h>
 #include "dir_op.h"
 
 #ifndef LIST_OP

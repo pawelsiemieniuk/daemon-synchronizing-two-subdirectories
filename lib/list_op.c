@@ -1,16 +1,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <sys/types.h>
 
 #include "dir_op.h"
 
-f_list *push(f_list *list_head, char *path, char *name, off_t size, time_t mod_time){
+struct f_list *push(f_list *list_head, char *path, char *name, off_t size, time_t mod_time){
     f_list *head = list_head;
 
-    printf("---------o\n\n");
-    f_list *last = calloc(1, sizeof(f_list));
-    f_info *file = calloc(1, sizeof(f_info));
-    printf("---------p\n\n");
+    f_list *last = (struct f_list*)calloc(1, sizeof(f_list));
+    f_info *file = (struct f_info*)calloc(1, sizeof(f_info));
+
 
     strcpy(file->f_name, name);
     file->f_size  = size;
@@ -20,14 +20,14 @@ f_list *push(f_list *list_head, char *path, char *name, off_t size, time_t mod_t
     last->path    = path;
     last->file_i  = file;
     last->next    = NULL;
-
+    
     if(!list_head){ return last; }
 
     while(head->next){ head = head->next; }
 
     head->next = last;
 
-    return head;
+    return list_head;
 }
 
 void clean(f_list *list_head){

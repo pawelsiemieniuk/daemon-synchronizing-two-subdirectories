@@ -32,38 +32,35 @@ typedef struct file_list {
 
 void readDir(f_list **list, char *pathname)
 {
-        printf("---------f\n\n");
+        printf("path - %s\n", pathname);
         DIR *dir = opendir(pathname);
         struct dirent *read_file;
-        printf("---------g\n\n");
 
         while((read_file = readdir(dir)) != NULL)
         {
                 unsigned char file_type = read_file->d_type;
                 char *filename = read_file->d_name;
-                printf("---------b\n\n");
+                //int path_len = strlen(pathname) + strlen(filename) + 1;
                 char *file_path = calloc(strlen(pathname) + strlen(filename) + 1, sizeof(char));
                 strcat(file_path, pathname);
                 strcat(file_path, "/");
                 strcat(file_path, filename);
-                printf("---------c\n\n");
 
-                struct stat *file_buff = calloc(1, sizeof(stat));
+                struct stat *file_buff = calloc(1, sizeof(struct stat));
                 lstat(file_path, file_buff);
-                printf("---------d\n\n");
                 
                 if(file_type == DT_REG){
-                printf("---------e\n\n");
+                        printf("--%s/%s\n\n", pathname, filename);
                         (*list) = push((*list), 
                                         pathname, 
                                         filename, 
                                         file_buff->st_size, 
                                         file_buff->st_mtim.tv_sec);
                 }   
-                else if(dir_check && file_type == DT_DIR){
+                else if(dir_check && strcmp(filename, "..") && strcmp(filename, ".") && file_type == DT_DIR){
                         long dir_loc = telldir(dir);
                         closedir(dir);
-
+                        printf("FILEPATH %s\n", file_path);
                         readDir(list, file_path);
                         
                         dir = opendir(pathname);
@@ -73,14 +70,23 @@ void readDir(f_list **list, char *pathname)
                 free(file_path);
                 free(file_buff);
         }
+
+        /*f_list *tmp_l = (*list);
+        while(tmp_l){
+                f_info *tmp_i = tmp_l->file_i;
+                printf("%s/%s | %d\n", tmp_l->path, tmp_i->f_name, tmp_l->checked);
+                tmp_l = tmp_l->next;
+        }*/
+
         closedir(dir);
 }
 
 void copyDir(f_list **src_list){
         f_list *tmp_list = (*src_list);
         while(tmp_list){
+                printf("PATH %s\n", tmp_list->path);
                 if(!tmp_list->checked)
-                        copyFile((*src_list)->path, (*src_list)->file_i);
+                        copyFile(tmp_list->path, tmp_list->file_i);
                 tmp_list = tmp_list->next;
         }
 }
@@ -89,11 +95,13 @@ void cleanDir(f_list **dst_list){
         f_list *tmp_list = (*dst_list);
         while(tmp_list)
         {
+                printf("PATH %s\n", tmp_list->path);
                 if(!tmp_list->checked)
                 {
                         f_info *tmp_file = tmp_list->file_i;
                         char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name), sizeof(char));
                         strcat(file_path, tmp_list->path);
+                        strcat(file_path, "/");
                         strcat(file_path, tmp_file->f_name);
 
                         delFile(file_path);
