@@ -49,7 +49,7 @@ void cpy_mmap(char *path, f_info *finf)
     strcat(dst_path, "/");
     strcat(dst_path, fname); // Dopisanie nazwy pliku
     
-    unsigned int src_fd = open(path, O_RDONLY);
+    unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
 
     src_map_pos = mmap(0, fsize, PROT_READ, MAP_SHARED, src_fd, 0);   // Mapowanie pliku źródłowego
