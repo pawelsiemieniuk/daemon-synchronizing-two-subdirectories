@@ -12,7 +12,6 @@
 char *SRC_NAME = NULL, *DST_NAME = NULL;
 bool dir_check = false;
 
-
 void readDir(f_list **list, char *pathname)
 {
         DIR *dir = opendir(pathname);

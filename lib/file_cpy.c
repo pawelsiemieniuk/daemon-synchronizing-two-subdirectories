@@ -40,24 +40,24 @@ void cpy_mmap(char *path, f_info *finf)
     t_buf->modtime = finf->f_mtime;
     
 
-    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));
-    strcat(dst_path, DST_NAME);
-    for (int i = strlen(SRC_NAME); i < strlen(path); i++)
+    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));  // Wyliczanie miejsca na scieżkę docelową
+    strcat(dst_path, DST_NAME);                                                                                     // Dopisanie początku scieżki docelowej
+    for (int i = strlen(SRC_NAME); i < strlen(path); i++)                                                           // Dopisanie pośrednich katalogów
     {
         dst_path[i] = path[i];
     }
     strcat(dst_path, "/");
-    strcat(dst_path, fname);
+    strcat(dst_path, fname); // Dopisanie nazwy pliku
     
     unsigned int src_fd = open(path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
 
-    src_map_pos = mmap(0, fsize, PROT_READ, MAP_SHARED, src_fd, 0);
-    dst_map_pos = mmap(0, fsize, PROT_WRITE, MAP_SHARED, dst_fd, 0);
+    src_map_pos = mmap(0, fsize, PROT_READ, MAP_SHARED, src_fd, 0);   // Mapowanie pliku źródłowego
+    dst_map_pos = mmap(0, fsize, PROT_WRITE, MAP_SHARED, dst_fd, 0);  // Mapowanie pliku docelowego
 
-    memcpy(dst_map_pos, src_map_pos, fsize);
+    memcpy(dst_map_pos, src_map_pos, fsize);                          // Kopiowanie
 
-    munmap(src_map_pos, fsize);
+    munmap(src_map_pos, fsize);                                       // Usuwanie mapowania
     munmap(dst_map_pos, fsize);
 
     close(src_fd);
@@ -75,8 +75,7 @@ void cpy_normal(char *path, f_info *finf)
     size_t *buffer = calloc(1, sizeof(size_t));
     size_t fsize = finf -> f_size;
     char *fname = finf->f_name;
-    
-    
+
     char *src_path = calloc(strlen(path) + strlen(fname) + 1, sizeof(char));
     strcpy(src_path, path);
     struct utimbuf *t_buf = calloc(1, sizeof(struct utimbuf));
@@ -85,10 +84,10 @@ void cpy_normal(char *path, f_info *finf)
     strcat(src_path, "/");
     strcat(src_path, fname);
     
+    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char)); // Wyliczanie miejsca na scieżkę docelową
 
-    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));
-    strcat(dst_path, DST_NAME);
-    for (int i = strlen(SRC_NAME); i < strlen(path); i++)
+    strcat(dst_path, DST_NAME);                             // Dopisanie początku scieżki docelowej
+    for (int i = strlen(SRC_NAME); i < strlen(path); i++)   // Dopisanie pośrednich katalogów
     {
         dst_path[i] = path[i];
     }
@@ -96,14 +95,13 @@ void cpy_normal(char *path, f_info *finf)
 
 
     strcat(dst_path, "/");
-    strcat(dst_path, fname);
+    strcat(dst_path, fname);                                // Dopisanie nazwy pliku
 
     unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
     
     read(src_fd, buffer, fsize);
     write(dst_fd, buffer, fsize);
-    
     
     free(src_path);
     free(buffer);
