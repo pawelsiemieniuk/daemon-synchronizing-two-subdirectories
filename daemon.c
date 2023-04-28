@@ -11,20 +11,13 @@
 #include <sys/types.h>
 
 #include "./lib/file_op.h"
+#include "./lib/list_op.h"
 #include "./lib/dir_op.h"
 #include "./lib/log.h"
 
-/* Przeniesione do file_op.h i dir_op.h
 
-//unsigned int sleep_time = 300; // 5min
-//unsigned int big_file_size = 256; // ostatecznie mozna zmienic na wieksza
-
-
-char *SRC_NAME = "", *DST_NAME = "";
-
-*/
-unsigned int sleep_time = 300;  // 5min
-pthread_t *bed_t;               // Wskaznik na strukture przechowujaca informacje o watku
+unsigned int sleep_time = 300;  // czas po ktorym nastapi ponowna synchronizacja
+pthread_t *bed_t;               // wskaznik na strukture przechowujaca informacje o watku
 
 
 void signalHandler(int sig) { if(sig == SIGUSR1) pthread_cancel(*bed_t); }
@@ -33,12 +26,14 @@ void *bedThread() { sleep(sleep_time); }
 
 
 int main(int argc, char **argv){
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         struct sigaction *new_act = calloc(1, sizeof(struct sigaction));
         new_act->sa_handler = signalHandler;
 
         sigaction(SIGUSR1, new_act, NULL);
-
 
         for(int i=1; i<argc ;i++){
                 if(argv[i][0] == '-'){
@@ -50,25 +45,12 @@ int main(int argc, char **argv){
                                 big_file_size = (unsigned int)atoi(argv[++i]);
                 }
                 else if(!SRC_NAME){
-                        /*if(stat(argv[i], NULL) == -1){
-                                printf("Unable to open source directory.\n", argv[i]);
-                                return -1;
-                        }*/
                         SRC_NAME = realpath(argv[i], NULL);
                 }
                 else if(!DST_NAME){
-                        /*if(stat(argv[i], NULL) == -1){
-                                printf("Unable to open destination directory.\n");
-                                return -1;
-                        }*/
                         DST_NAME = realpath(argv[i], NULL);
                 }
-		else{
-                        // za duzo argumentow
-                        // można pominąć
-                }
         }
-
 
         if(!DST_NAME){
             printf("Not enough arguments.\n");
@@ -80,21 +62,25 @@ int main(int argc, char **argv){
         }
         
 
+<<<<<<< Updated upstream
         f_list *src_list = (f_list *)calloc(1, sizeof(f_list));
         f_list *dst_list = (f_list *)calloc(1, sizeof(f_list));
         src_list = NULL;
         dst_list = NULL;
+=======
+        f_list *src_list;
+        f_list *dst_list;
+>>>>>>> Stashed changes
 
         bed_t = calloc(1, sizeof(pthread_t));
 
-        printf("-R %d\n", dir_check);
-        printf("-t %d\n", sleep_time);
-        printf("-s %d\n", big_file_size);
-
-        printf("%s\n", SRC_NAME);
-        printf("%s\n", DST_NAME);
 
         while(1){
+            src_list = (f_list *)calloc(1, sizeof(f_list));
+            dst_list = (f_list *)calloc(1, sizeof(f_list));
+            src_list = NULL;
+            dst_list = NULL;
+
             logAction("wake_up");
 
             readDir(&src_list, SRC_NAME);
@@ -102,6 +88,7 @@ int main(int argc, char **argv){
 
             fileListCompare(&src_list, &dst_list);
                 
+<<<<<<< Updated upstream
                 f_list *tmp_l = (src_list);
                 while(tmp_l){
                         f_info *tmp_i = tmp_l->file_i;
@@ -109,11 +96,17 @@ int main(int argc, char **argv){
                         tmp_l = tmp_l->next;
                 }
             //copyDir(&src_list);
+=======
+            copyDir(&src_list);
+>>>>>>> Stashed changes
             cleanDir(&dst_list);
 
+            clean(src_list);
+            
             logAction("sleep");
-            pthread_create(bed_t, NULL, bedThread, NULL);       // Tworzenie watku
-            pthread_join(*bed_t, NULL);                         // Wstrzymanie procesu do konca watku
+
+            pthread_create(bed_t, NULL, bedThread, NULL);       // tworzenie watku
+            pthread_join(*bed_t, NULL);                         // wstrzymanie procesu do zakonczenia watku
         }
 
         return 0;

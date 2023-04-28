@@ -22,31 +22,3 @@ void logAction(char *action)
 	close(f_log);
 	free(sysArg);
 }
-
-/*
-void main(int argc, char *argv[])
-{
-	char *src = argv[1];
-	char *dst = argv[2];
-
-	unsigned int fsrc = open(src, O_RDONLY);
-	unsigned int fdst = open(dst, O_WRONLY);
-
-	size_t *buffer = calloc(1, 1);
-	size_t buf_read = 1;
-
-
-	while(buf_read > 0)
-	{
-		buf_read = read(fsrc, buffer, 1);
-		write(fdst, buffer, 1);
-	}
-	free(buffer);
-	close(fsrc);
-	close(fdst);
-
-	logAction("copy successful");
-
-	return;
-}
-*/

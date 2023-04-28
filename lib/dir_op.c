@@ -8,11 +8,11 @@
 
 #include "file_op.h"
 #include "list_op.h"
-//#include "dir_op.h"
 
 char *SRC_NAME = NULL, *DST_NAME = NULL;
 bool dir_check = false;
 
+<<<<<<< Updated upstream
 /*typedef struct file_info {
         char    f_name[256];    // nazwa pliku
         off_t   f_size;         // rozmiar pliku w bajtach
@@ -33,6 +33,11 @@ typedef struct file_list {
 void readDir(f_list **list, char *pathname)
 {
         printf("path - %s\n", pathname);
+=======
+
+void readDir(f_list **list, char *pathname)
+{
+>>>>>>> Stashed changes
         DIR *dir = opendir(pathname);
         struct dirent *read_file;
 
@@ -40,7 +45,10 @@ void readDir(f_list **list, char *pathname)
         {
                 unsigned char file_type = read_file->d_type;
                 char *filename = read_file->d_name;
+<<<<<<< Updated upstream
                 //int path_len = strlen(pathname) + strlen(filename) + 1;
+=======
+>>>>>>> Stashed changes
                 char *file_path = calloc(strlen(pathname) + strlen(filename) + 1, sizeof(char));
                 strcat(file_path, pathname);
                 strcat(file_path, "/");
@@ -50,24 +58,29 @@ void readDir(f_list **list, char *pathname)
                 lstat(file_path, file_buff);
                 
                 if(file_type == DT_REG){
+<<<<<<< Updated upstream
                         printf("--%s/%s\n\n", pathname, filename);
+=======
+>>>>>>> Stashed changes
                         (*list) = push((*list), 
                                         pathname, 
                                         filename, 
                                         file_buff->st_size, 
-                                        file_buff->st_mtim.tv_sec);
+                                        file_buff->st_mtime);
                 }   
                 else if(dir_check && strcmp(filename, "..") && strcmp(filename, ".") && file_type == DT_DIR){
                         long dir_loc = telldir(dir);
                         closedir(dir);
+<<<<<<< Updated upstream
                         printf("FILEPATH %s\n", file_path);
+=======
+>>>>>>> Stashed changes
                         readDir(list, file_path);
                         
                         dir = opendir(pathname);
                         seekdir(dir, dir_loc);
                 }
-                        
-                free(file_path);
+                
                 free(file_buff);
         }
 
@@ -99,14 +112,13 @@ void cleanDir(f_list **dst_list){
                 if(!tmp_list->checked)
                 {
                         f_info *tmp_file = tmp_list->file_i;
-                        char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name), sizeof(char));
+                        char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name) + 1, sizeof(char));
                         strcat(file_path, tmp_list->path);
                         strcat(file_path, "/");
                         strcat(file_path, tmp_file->f_name);
 
+                        printf("CLEAN %s\n", file_path);
                         delFile(file_path);
-
-                        free(file_path);
                 }
                 tmp_list = tmp_list->next;
         }

@@ -4,13 +4,34 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
+<<<<<<< Updated upstream
+=======
+#include <sys/stat.h>
+>>>>>>> Stashed changes
 #include <utime.h>
 
 #include "dir_op.h"
 
+void createDir(char *pathname){
+    int path_len = strlen(pathname);
+    int dst_len = strlen(DST_NAME);
+    path_len -= dst_len;
+    
+    char *dir = calloc(path_len, sizeof(char));
+    dir = DST_NAME;
+
+    for(int i=dst_len-1; i < path_len; i++){
+        if(pathname[i] == '/'){
+            mkdir(dir, S_IRWXU | S_IRWXG | S_IRWXO);
+        }
+        dir[i] = pathname[i];
+    }
+}
+
 void cpy_mmap(char *path, f_info *finf)
 {
     void *src_map_pos, *dst_map_pos;
+<<<<<<< Updated upstream
     size_t fsize = finf->f_size;
     char *fname = finf->f_name;
 
@@ -22,11 +43,25 @@ void cpy_mmap(char *path, f_info *finf)
     t_buf.actime = finf->f_mtime;
     t_buf.modtime = finf->f_mtime;
 
+=======
+    size_t fsize = (size_t)finf->f_size;
+    char *fname = finf->f_name;
+    
+    char *src_path = calloc(strlen(path) + strlen(fname) + 1, sizeof(char));
+    strcpy(src_path, path);
+    strcat(src_path, "/");
+    strcat(src_path, fname);
+    struct utimbuf *t_buf = calloc(1, sizeof(struct utimbuf));
+    t_buf->actime = finf->f_mtime;
+    t_buf->modtime = finf->f_mtime;
+    
+
+>>>>>>> Stashed changes
     char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));
     strcat(dst_path, DST_NAME);
     for (int i = strlen(SRC_NAME); i < strlen(path); i++)
     {
-        strcat(dst_path, path[i]);
+        dst_path[i] = path[i];
     }
     strcat(dst_path, "/");
     strcat(dst_path, fname);
@@ -39,14 +74,22 @@ void cpy_mmap(char *path, f_info *finf)
 
     memcpy(dst_map_pos, src_map_pos, fsize);
 
+<<<<<<< Updated upstream
     utime(src_path, &t_buf);
 
+=======
+>>>>>>> Stashed changes
     munmap(src_map_pos, fsize);
     munmap(dst_map_pos, fsize);
 
     close(src_fd);
     close(dst_fd);
 
+<<<<<<< Updated upstream
+=======
+    utime(src_path, t_buf);
+    utime(dst_path, t_buf);
+>>>>>>> Stashed changes
 
     free(src_path);
     free(dst_path);
@@ -54,10 +97,11 @@ void cpy_mmap(char *path, f_info *finf)
 
 void cpy_normal(char *path, f_info *finf)
 {
-    size_t *buffer = calloc(1, 1);
+    size_t *buffer = calloc(1, sizeof(size_t));
     size_t fsize = finf -> f_size;
     char *fname = finf->f_name;
     
+<<<<<<< Updated upstream
     char *src_path = calloc(strlen(path) + strlen(fname) + 1, sizeof(char));
     strcpy(src_path, path);
     strcat(src_path, "/");
@@ -65,26 +109,55 @@ void cpy_normal(char *path, f_info *finf)
     struct utimbuf *t_buf = calloc(1, sizeof(struct utimbuf));
     t_buf->actime = finf->f_mtime;
     t_buf->modtime = finf->f_mtime;
+=======
+    
+    char *src_path = calloc(strlen(path) + strlen(fname) + 1, sizeof(char));
+    strcpy(src_path, path);
+    struct utimbuf *t_buf = calloc(1, sizeof(struct utimbuf));
+    t_buf->actime = finf->f_mtime;
+    t_buf->modtime = finf->f_mtime;
+    strcat(src_path, "/");
+    strcat(src_path, fname);
+    
+>>>>>>> Stashed changes
 
     char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));
     strcat(dst_path, DST_NAME);
     for (int i = strlen(SRC_NAME); i < strlen(path); i++)
     {
-        strcat(dst_path, path[i]);
+        dst_path[i] = path[i];
     }
+<<<<<<< Updated upstream
+    strcat(dst_path, "/");
+    strcat(dst_path, fname);
+=======
+    //createDir(dst_path);
+>>>>>>> Stashed changes
+
+
     strcat(dst_path, "/");
     strcat(dst_path, fname);
 
-    unsigned int src_fd = open(path, O_RDONLY);
+    unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
     
     read(src_fd, buffer, fsize);
     write(dst_fd, buffer, fsize);
     
+<<<<<<< Updated upstream
     utime(src_path, t_buf);
+=======
+>>>>>>> Stashed changes
     
     free(src_path);
     free(buffer);
     close(src_fd);
     close(dst_fd);
+<<<<<<< Updated upstream
+=======
+
+    utime(dst_path, t_buf);
+    utime(src_path, t_buf);
+>>>>>>> Stashed changes
 }
+
