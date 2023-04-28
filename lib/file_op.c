@@ -6,11 +6,11 @@
 #include "dir_op.h"
 #include "log.h"
 
-unsigned int big_file_size = 256; // ostatecznie mozna zmienic na wieksza
+unsigned int big_file_size = 256;
 
 
 bool fileCompare(f_info *src_file, f_info *dst_file){
-    if(!strcmp(src_file->f_name, dst_file->f_name))
+    if(strcmp(src_file->f_name, dst_file->f_name))
         return false;
     if((src_file)->f_size != (dst_file)->f_size)
         return false;
@@ -23,10 +23,12 @@ bool fileCompare(f_info *src_file, f_info *dst_file){
 void fileListCompare(f_list **src_list, f_list **dst_list){
     f_list *src = (*src_list);
     f_list *dst = (*dst_list);
-    
+    f_info *f_i, *d_i;
     while(src){
         while(dst){
             if(!dst->checked){
+                f_i = src->file_i;
+                d_i = dst->file_i;
                 if(fileCompare(src->file_i, dst->file_i)){
                     src->checked = true;
                     dst->checked = true;
@@ -34,14 +36,14 @@ void fileListCompare(f_list **src_list, f_list **dst_list){
             }
             dst = dst->next;
         }
+        dst = (*dst_list);
         src = src->next;
     }
 }
 
 void copyFile(char *path, f_info *file_i){
-
         if(file_i->f_size >= big_file_size){
-                cpy_mmap(path, file_i); // nie muszą być oddzielne funkcje, tylko poglądowo napisałem
+                cpy_mmap(path, file_i);
                 logAction("cpy_mmap");
         }
         else{
