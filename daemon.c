@@ -26,10 +26,6 @@ void *bedThread() { sleep(sleep_time); }
 
 
 int main(int argc, char **argv){
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
         struct sigaction *new_act = calloc(1, sizeof(struct sigaction));
         new_act->sa_handler = signalHandler;
 
@@ -62,15 +58,8 @@ int main(int argc, char **argv){
         }
         
 
-<<<<<<< Updated upstream
-        f_list *src_list = (f_list *)calloc(1, sizeof(f_list));
-        f_list *dst_list = (f_list *)calloc(1, sizeof(f_list));
-        src_list = NULL;
-        dst_list = NULL;
-=======
         f_list *src_list;
         f_list *dst_list;
->>>>>>> Stashed changes
 
         bed_t = calloc(1, sizeof(pthread_t));
 
@@ -88,17 +77,7 @@ int main(int argc, char **argv){
 
             fileListCompare(&src_list, &dst_list);
                 
-<<<<<<< Updated upstream
-                f_list *tmp_l = (src_list);
-                while(tmp_l){
-                        f_info *tmp_i = tmp_l->file_i;
-                        printf("%s/%s | %d\n", tmp_l->path, tmp_i->f_name, tmp_l->checked);
-                        tmp_l = tmp_l->next;
-                }
-            //copyDir(&src_list);
-=======
             copyDir(&src_list);
->>>>>>> Stashed changes
             cleanDir(&dst_list);
 
             clean(src_list);

@@ -10,17 +10,12 @@ unsigned int big_file_size = 256;
 
 
 bool fileCompare(f_info *src_file, f_info *dst_file){
-<<<<<<< Updated upstream
-    char *src_name, *dst_name;
-    if(!strcmp(src_file->f_name, dst_file->f_name))
-=======
     if(strcmp(src_file->f_name, dst_file->f_name))
->>>>>>> Stashed changes
         return false;
     if((src_file)->f_size != (dst_file)->f_size)
         return false;
-    //if((src_file)->f_mtime != (dst_file)->f_mtime)
-        //return false;
+    if((src_file)->f_mtime != (dst_file)->f_mtime)
+        return false;
 
     return true;
 }
@@ -28,20 +23,12 @@ bool fileCompare(f_info *src_file, f_info *dst_file){
 void fileListCompare(f_list **src_list, f_list **dst_list){
     f_list *src = (*src_list);
     f_list *dst = (*dst_list);
-<<<<<<< Updated upstream
-    f_info *f_i;
-=======
     f_info *f_i, *d_i;
->>>>>>> Stashed changes
     while(src){
         while(dst){
             if(!dst->checked){
                 f_i = src->file_i;
-<<<<<<< Updated upstream
-                printf("%s\n\n", f_i->f_name);
-=======
                 d_i = dst->file_i;
->>>>>>> Stashed changes
                 if(fileCompare(src->file_i, dst->file_i)){
                     src->checked = true;
                     dst->checked = true;
@@ -55,10 +42,6 @@ void fileListCompare(f_list **src_list, f_list **dst_list){
 }
 
 void copyFile(char *path, f_info *file_i){
-<<<<<<< Updated upstream
-        printf("------copy %s\n", path);
-=======
->>>>>>> Stashed changes
         if(file_i->f_size >= big_file_size){
                 cpy_mmap(path, file_i);
                 logAction("cpy_mmap");

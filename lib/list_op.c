@@ -10,10 +10,6 @@ struct f_list *push(f_list *list_head, char *path, char *name, off_t size, time_
 
     f_list *last = (struct f_list*)calloc(1, sizeof(f_list));
     f_info *file = (struct f_info*)calloc(1, sizeof(f_info));
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
     strcpy(file->f_name, name);
     file->f_size  = size;
