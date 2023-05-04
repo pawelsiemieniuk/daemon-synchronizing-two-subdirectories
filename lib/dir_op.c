@@ -17,6 +17,7 @@ bool HasContents(char *dir_path){
         if(readdir(dir) == NULL) // czy katalog ma zawartosc
                 return true;
         return false;
+        closedir(dir);
 }
 
 void readDir(f_list **list, char *pathname)
@@ -89,7 +90,8 @@ void cleanDir(f_list **dst_list){
                         if(!HasContents(dir_path)){
                                 delDir(dir_path);
                         }
-                                
+                        free(file_path);
+                        free(dir_path);
                 }
                 tmp_list = tmp_list->next;
         }
