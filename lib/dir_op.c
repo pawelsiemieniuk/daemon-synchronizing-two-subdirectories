@@ -64,17 +64,33 @@ void cleanDir(f_list **dst_list){
         f_list *tmp_list = (*dst_list);
         while(tmp_list)
         {
-                f_info *test = tmp_list->file_i;
                 if(!tmp_list->checked)
                 {
                         f_info *tmp_file = tmp_list->file_i;
                         char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name) + 2, sizeof(char));
+                        char *dir_path = calloc(strlen(tmp_list->path), sizeof(char));
                         strcat(file_path, tmp_list->path);
                         strcat(file_path, "/");
                         strcat(file_path, tmp_file->f_name);
-
+                        
                         delFile(file_path);
+                        
+                        if(!HasContents(dir_path))          
+                                delFile(dir_path);
                 }
                 tmp_list = tmp_list->next;
         }
+}
+
+bool HasContents(char *file_path){
+        DIR *dir;
+        if((dir = opendir(file_path)) == NULL) // czy plik jest katalogiem
+        {
+                return false;
+        } 
+                
+        if(readdir(dir) == NULL) // czy katalog ma zawartosc
+                return true;
+        return false;
+
 }
