@@ -82,13 +82,9 @@ void cleanDir(f_list **dst_list){
         }
 }
 
-bool HasContents(char *file_path){
+bool HasContents(char *dir_path){
         DIR *dir;
-        if((dir = opendir(file_path)) == NULL) // czy plik jest katalogiem
-        {
-                return false;
-        } 
-                
+        dir = opendir(dir_path);               
         if(readdir(dir) == NULL) // czy katalog ma zawartosc
                 return true;
         return false;
