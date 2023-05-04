@@ -36,7 +36,7 @@ void readDir(f_list **list, char *pathname)
                                         filename, 
                                         file_buff->st_size, 
                                         file_buff->st_mtime);
-                        //free(path_name); bo info zapisane w file_buff chyba?
+                        //free(file_path); bo info zapisane w file_buff chyba?
                 }   
                 else if(dir_check && strcmp(filename, "..") && strcmp(filename, ".") && file_type == DT_DIR){
                         long dir_loc = telldir(dir);
