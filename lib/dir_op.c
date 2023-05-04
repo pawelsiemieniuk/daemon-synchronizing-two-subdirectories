@@ -82,25 +82,6 @@ void cleanDir(f_list **dst_list){
         }
 }
 
-f_list delDir(f_list *tmp_list){
-        while(!tmp_list->checked)
-        {
-                f_info *tmp_file = tmp_list->file_i;
-                char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name) + 2, sizeof(char));
-                strcat(file_path, tmp_list->path);
-                strcat(file_path, "/");
-                strcat(file_path, tmp_file->f_name);
-                if(HasContents(file_path)){
-                        tmp_list = delDir (file_path);
-                }
-                else            
-                        delFile(file_path);
-
-                tmp_list = tmp_list->next;
-        }
-        return tmp_list;
-}
-
 bool HasContents(char *file_path){
         DIR *dir;
         if((dir = opendir(file_path)) == NULL) // czy plik jest katalogiem
