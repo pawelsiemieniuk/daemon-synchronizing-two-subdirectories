@@ -12,6 +12,12 @@
 char *SRC_NAME = NULL, *DST_NAME = NULL;
 bool dir_check = false;
 
+bool HasContents(char *dir_path){
+        DIR *dir = opendir(dir_path);
+        if(readdir(dir) == NULL) // czy katalog ma zawartosc
+                return true;
+        return false;
+}
 
 void readDir(f_list **list, char *pathname)
 {
@@ -70,24 +76,21 @@ void cleanDir(f_list **dst_list){
                         f_info *tmp_file = tmp_list->file_i;
                         char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name) + 2, sizeof(char));
                         char *dir_path = calloc(strlen(tmp_list->path), sizeof(char));
-                        strcat(file_path, tmp_list->path);
+                        
+                        strcat(dir_path, tmp_list->path);
+
+                        strcat(file_path, dir_path);
                         strcat(file_path, "/");
                         strcat(file_path, tmp_file->f_name);
-                        
+
                         delFile(file_path);
                         
-                        if(!HasContents(dir_path))          
-                                delFile(dir_path);
+                        if(!HasContents(dir_path)){
+                                delDir(dir_path);
+                        }
+                                
                 }
                 tmp_list = tmp_list->next;
         }
 }
 
-bool HasContents(char *dir_path){
-        DIR *dir;
-        dir = opendir(dir_path);               
-        if(readdir(dir) == NULL) // czy katalog ma zawartosc
-                return true;
-        return false;
-
-}

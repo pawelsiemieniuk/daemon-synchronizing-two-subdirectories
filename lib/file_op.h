@@ -11,5 +11,6 @@ void fileListCompare(f_list **src_list, f_list **dst_list); // porownywanie list
 bool fileCompare(f_info *src_file, f_info *dst_file);       // porownywanie dwoch plikow
 void copyFile(char *path, f_info *file_i);                  // kopiowanie pliku z katalogu zrodlowego do docelowego
 void delFile(char *pathname);                               // usuwanie pliku
+void delDir(char *pathname);
 
 #endif

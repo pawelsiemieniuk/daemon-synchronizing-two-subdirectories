@@ -55,7 +55,10 @@ void copyFile(char *path, f_info *file_i){
 
 void delFile(char *pathname){
     if(unlink(pathname) == 0)
-    {
         logAction("del_file");
-    }
+}
+
+void delDir(char *pathname){
+    if(rmdir(pathname) == 0)
+        logAction("del_dir");
 }

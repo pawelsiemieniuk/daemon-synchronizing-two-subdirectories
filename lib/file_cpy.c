@@ -8,9 +8,10 @@
 #include <utime.h>
 
 #include "dir_op.h"
+#include "log.h"
 
 void createDir(char *pathname){
-    int path_len = (int)strlen(pathname);
+    int path_len = (int)strlen(pathname) + 1;
     int dst_len = (int)strlen(DST_NAME);
 
     if(path_len==dst_len) { return; }
@@ -21,6 +22,7 @@ void createDir(char *pathname){
     for(int i=dst_len-1; i < path_len; i++){
         if(pathname[i] == '/'){
             mkdir(dir, S_IRWXU | S_IRWXG | S_IRWXO);
+            logAction("cpy_dir");
         }
         dir[i] = pathname[i];
     }
