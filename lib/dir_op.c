@@ -53,6 +53,7 @@ void readDir(f_list **list, char *pathname)
                         seekdir(dir, dir_loc);
                 }
                 
+                free(file_path);
                 free(file_buff);
         }
         closedir(dir);
@@ -75,7 +76,7 @@ void cleanDir(f_list **dst_list){
                 {
                         f_info *tmp_file = tmp_list->file_i;
                         char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name) + 2, sizeof(char));
-                        char *dir_path = calloc(strlen(tmp_list->path), sizeof(char));
+                        char *dir_path = calloc(strlen(tmp_list->path) + 1, sizeof(char));
                         
                         strcat(dir_path, tmp_list->path);
 
