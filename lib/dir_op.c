@@ -8,9 +8,8 @@
 
 #include "file_op.h"
 #include "list_op.h"
+#include "var.h"
 
-char *SRC_NAME = NULL, *DST_NAME = NULL;
-bool dir_check = false;
 
 bool HasContents(char *dir_path){
         DIR *dir = opendir(dir_path);
@@ -20,7 +19,6 @@ bool HasContents(char *dir_path){
         }
         closedir(dir);
         return false;
-        closedir(dir);
 }
 
 void readDir(f_list **list, char *pathname)
@@ -46,9 +44,8 @@ void readDir(f_list **list, char *pathname)
                                         filename, 
                                         file_buff->st_size, 
                                         file_buff->st_mtime);
-                        //free(file_path); bo info zapisane w file_buff chyba?
                 }   
-                else if(dir_check && strcmp(filename, "..") && strcmp(filename, ".") && file_type == DT_DIR){
+                else if(F_SUBDIR && strcmp(filename, "..") && strcmp(filename, ".") && file_type == DT_DIR){
                         long dir_loc = telldir(dir);
                         closedir(dir);
                         readDir(list, file_path);

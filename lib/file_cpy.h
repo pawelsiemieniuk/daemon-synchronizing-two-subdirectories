@@ -3,7 +3,10 @@
 #ifndef CPY
 #define CPY
 
-void copyMap(char *src_path, f_info *finf);        // kopiowanie plikow przy pomocy mmap()
-void copyNormal(char *src_path, f_info *finf);      // kopiowanie plikow przy pomocy read() i write()
+// Kopiowanie plikow poprzez mapowanie ich w pamieci
+void copyMap(char *src_path, f_info *finf);
+
+// Kopiowanie plikow wykorzystujac buffer
+void copyNormal(char *src_path, f_info *finf);      
 
 #endif

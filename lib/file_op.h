@@ -5,12 +5,19 @@
 #ifndef FILE_OP
 #define FILE_OP
 
-extern unsigned int big_file_size;                          // rozmiar pliku po ktorym zostanie on zapisany przy pomocy mmap()
+// Porownywanie listy plikow z katalogu zrodlowego i docelowego
+void fileListCompare(f_list **src_list, f_list **dst_list);
 
-void fileListCompare(f_list **src_list, f_list **dst_list); // porownywanie listy plikow z katalogu zrodlowego i docelowego
-bool fileCompare(f_info *src_file, f_info *dst_file);       // porownywanie dwoch plikow
-void copyFile(char *path, f_info *file_i);                  // kopiowanie pliku z katalogu zrodlowego do docelowego
-void delFile(char *pathname);                               // usuwanie pliku
+// Porownywanie dwoch plikow
+bool fileCompare(f_info *src_file, f_info *dst_file);
+
+// Kopiowanie pliku z katalogu zrodlowego do docelowego
+void copyFile(char *path, f_info *file_i);
+
+// Usuwanie pliku
+void delFile(char *pathname);
+
+// Usuwanie katalogu
 void delDir(char *pathname);
 
 #endif

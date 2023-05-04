@@ -6,8 +6,7 @@
 #include "file_cpy.h"
 #include "dir_op.h"
 #include "log.h"
-
-unsigned int big_file_size = 256;
+#include "var.h"
 
 
 bool fileCompare(f_info *src_file, f_info *dst_file){
@@ -43,7 +42,7 @@ void fileListCompare(f_list **src_list, f_list **dst_list){
 }
 
 void copyFile(char *path, f_info *file_i){
-        if(file_i->f_size >= big_file_size){
+        if(file_i->f_size >= BIG_FILE_SIZE){
                 copyMap(path, file_i);
                 logAction("cpy_mmap");
         }

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
@@ -9,6 +8,7 @@
 
 #include "dir_op.h"
 #include "log.h"
+#include "var.h"
 
 void createDir(char *pathname){
     int path_len = (int)strlen(pathname) + 1;
@@ -54,7 +54,7 @@ void copyMap(char *path, f_info *finf)
     {
         dst_path[i] = path[i];// Dopisanie pośrednich katalogów
     }
-    if(dir_check){
+    if(F_SUBDIR){
         createDir(dst_path);
     }
     strcat(dst_path, "/");
@@ -109,7 +109,7 @@ void copyNormal(char *path, f_info *finf)
     {// Dopisanie pośrednich katalogów
         dst_path[i] = path[i];
     }
-    if(dir_check){
+    if(F_SUBDIR){
         createDir(dst_path);
     }
 

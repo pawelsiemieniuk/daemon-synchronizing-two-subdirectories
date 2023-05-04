@@ -1,6 +1,7 @@
 #ifndef LOG
 #define LOG
 
-void logAction(char *action);   // zapis wykonanych akcji w logach
+// Zapis wykonanych akcji w logach
+void logAction(char *action);
 
 #endif

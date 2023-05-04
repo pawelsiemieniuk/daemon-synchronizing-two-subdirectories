@@ -9,20 +9,22 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <fcntl.h>
+
 
 #include "./lib/file_op.h"
 #include "./lib/list_op.h"
 #include "./lib/dir_op.h"
 #include "./lib/log.h"
+#include "./lib/var.h"
 
 
-unsigned int sleep_time = 300;  // czas po ktorym nastapi ponowna synchronizacja
 pthread_t *bed_t;               // wskaznik na strukture przechowujaca informacje o watku
 
 
 void signalHandler(int sig) { if(sig == SIGUSR1) pthread_cancel(*bed_t); }
 
-void *bedThread() { sleep(sleep_time); }
+void *bedThread() { sleep(SLEEP_TIME); }
 
 
 int main(int argc, char **argv){
@@ -34,16 +36,27 @@ int main(int argc, char **argv){
         for(int i=1; i<argc ;i++){
                 if(argv[i][0] == '-'){
                         if(argv[i][1] == 't')
-                                sleep_time = (unsigned int)atoi(argv[++i]);
+                                SLEEP_TIME = (unsigned int)atoi(argv[++i]);
                         else if(argv[i][1] == 'R')
-                                dir_check = true;
+                                F_SUBDIR = true;
                         else if(argv[i][1] == 's')
-                                big_file_size = (unsigned int)atoi(argv[++i]);
+                                BIG_FILE_SIZE = (unsigned int)atoi(argv[++i]);
                 }
                 else if(!SRC_NAME){
+                        DIR *src;
+                        if((src = opendir(argv[i])) == NULL){
+                                mkdir(argv[i], S_IRWXU | S_IRWXG | S_IRWXO);
+                        }
+                        closedir(src);
+
                         SRC_NAME = realpath(argv[i], NULL);
                 }
                 else if(!DST_NAME){
+                        DIR *dst;
+                        if((dst = opendir(argv[i])) == NULL){
+                                mkdir(argv[i], S_IRWXU | S_IRWXG | S_IRWXO);
+                        }
+                        closedir(dst);
                         DST_NAME = realpath(argv[i], NULL);
                 }
         }
@@ -77,8 +90,6 @@ int main(int argc, char **argv){
         
             copyDir(&src_list);
             cleanDir(&dst_list);
-        
-
 
             clean(src_list);
             clean(dst_list);
