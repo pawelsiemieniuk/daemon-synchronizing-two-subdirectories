@@ -14,8 +14,11 @@ bool dir_check = false;
 
 bool HasContents(char *dir_path){
         DIR *dir = opendir(dir_path);
-        if(readdir(dir) == NULL) // czy katalog ma zawartosc
+        if(readdir(dir) == NULL){ // czy katalog ma zawartosc
+                closedir(dir);
                 return true;
+        }
+        closedir(dir);
         return false;
         closedir(dir);
 }
@@ -91,7 +94,7 @@ void cleanDir(f_list **dst_list){
                                 delDir(dir_path);
                         }
                         free(file_path);
-                        free(dir_path);
+                        free(dir_path);                                
                 }
                 tmp_list = tmp_list->next;
         }

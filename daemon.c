@@ -75,9 +75,9 @@ int main(int argc, char **argv){
 
             fileListCompare(&src_list, &dst_list);
         
+            copyDir(&src_list);
             cleanDir(&dst_list);
         
-            copyDir(&src_list);
 
 
             clean(src_list);

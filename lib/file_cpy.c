@@ -30,12 +30,16 @@ void createDir(char *pathname){
     free(dir);
 }
 
+
+
 void copyMap(char *path, f_info *finf)
 {
-    void *src_map_pos, *dst_map_pos;
     size_t fsize = (size_t)finf->f_size;
+    char *src_map_pos, *dst_map_pos;
+
+
     char *fname = finf->f_name;
-    char *src_path = calloc(strlen(path) + strlen(fname) + 1, sizeof(char));
+    char *src_path = calloc(strlen(path) + strlen(fname) + 2, sizeof(char));
     strcpy(src_path, path);
     strcat(src_path, "/");
     strcat(src_path, fname);
@@ -50,19 +54,27 @@ void copyMap(char *path, f_info *finf)
     {
         dst_path[i] = path[i];// Dopisanie pośrednich katalogów
     }
+    if(dir_check){
+        createDir(dst_path);
+    }
     strcat(dst_path, "/");
     strcat(dst_path, fname);// Dopisanie nazwy pliku
     
+
     unsigned int src_fd = open(src_path, O_RDONLY);
-    unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
+    unsigned int dst_fd = open(dst_path, O_RDWR | O_CREAT);
 
-    src_map_pos = mmap(src_map_pos, fsize, PROT_READ, MAP_SHARED, src_fd, 0);// Mapowanie pliku zrodlowego
-    dst_map_pos = mmap(dst_map_pos, fsize, PROT_WRITE, MAP_SHARED, dst_fd, 0);// Mapowanie pliku docelowego
+    ftruncate(dst_fd, fsize);
 
-    //printf("aaa\n\n");
+    struct stat st;
+    fstat(src_fd, &st);
+    fchmod(dst_fd, st.st_mode);
+
+    src_map_pos = mmap(NULL, fsize, PROT_READ, MAP_SHARED, src_fd, 0);// Mapowanie pliku zrodlowego
+    dst_map_pos = mmap(NULL, fsize, PROT_READ | PROT_WRITE, MAP_SHARED, dst_fd, 0);// Mapowanie pliku docelowego
+
     memcpy(dst_map_pos, src_map_pos, fsize);//Kopiowanie
 
-    //printf("aaa\n\n");
     munmap(src_map_pos, fsize);//Usuwanie mapowania
     munmap(dst_map_pos, fsize);
 
@@ -72,16 +84,18 @@ void copyMap(char *path, f_info *finf)
     utime(src_path, t_buf);
     utime(dst_path, t_buf);
 
+    free(t_buf);
     free(src_path);
     free(dst_path);
 }
 
+
+
 void copyNormal(char *path, f_info *finf)
 {
-    size_t *buffer = calloc(1, sizeof(size_t));
     size_t fsize = finf->f_size;
     char *fname = finf->f_name;
-    
+    char *buffer = calloc(fsize, sizeof(char));
     
     char *src_path = calloc(strlen(path) + strlen(fname) + 2, sizeof(char));
     strcpy(src_path, path);
@@ -105,6 +119,10 @@ void copyNormal(char *path, f_info *finf)
     unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
     
+    struct stat st;
+    fstat(src_fd, &st);
+    fchmod(dst_fd, st.st_mode);
+
     read(src_fd, buffer, fsize);
     write(dst_fd, buffer, fsize);
     
@@ -118,9 +136,11 @@ void copyNormal(char *path, f_info *finf)
     utime(dst_path, t_buf);
     utime(src_path, t_buf);
 
+
     free(t_buf);
     free(src_path);
     free(dst_path);
     free(buffer);
 }
+
 
