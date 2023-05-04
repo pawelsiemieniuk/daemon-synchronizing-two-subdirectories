@@ -65,8 +65,8 @@ int main(int argc, char **argv){
 
 
         while(1){
-            src_list = (f_list *)calloc(1, sizeof(f_list));
-            dst_list = (f_list *)calloc(1, sizeof(f_list));
+            //src_list = (f_list *)calloc(1, sizeof(f_list));
+            //dst_list = (f_list *)calloc(1, sizeof(f_list));
             src_list = NULL;
             dst_list = NULL;
 
@@ -76,11 +76,14 @@ int main(int argc, char **argv){
             readDir(&dst_list, DST_NAME);
 
             fileListCompare(&src_list, &dst_list);
-                
-            copyDir(&src_list);
+        
             cleanDir(&dst_list);
+        
+            copyDir(&src_list);
+
 
             clean(src_list);
+            clean(dst_list);
             
             logAction("sleep");
 
