@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "file_cpy.h"
 #include "dir_op.h"
@@ -53,7 +54,7 @@ void copyFile(char *path, f_info *file_i){
 }
 
 void delFile(char *pathname){
-    if(remove(pathname) == 0)
+    if(unlink(pathname) == 0)
     {
         logAction("del_file");
     }
