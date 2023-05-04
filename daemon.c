@@ -65,8 +65,6 @@ int main(int argc, char **argv){
 
 
         while(1){
-            //src_list = (f_list *)calloc(1, sizeof(f_list));
-            //dst_list = (f_list *)calloc(1, sizeof(f_list));
             src_list = NULL;
             dst_list = NULL;
 

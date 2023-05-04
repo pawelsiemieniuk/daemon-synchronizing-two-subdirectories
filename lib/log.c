@@ -13,12 +13,16 @@ void logAction(char *action)
 	time_t t = time(NULL);
 	struct tm tStruct = *localtime(&t);
 	char currentDate[21];
+
 	sprintf(currentDate, "%02d-%02d-%d %02d:%02d:%02d ", tStruct.tm_mday, tStruct.tm_mon + 1, tStruct.tm_year + 1900, tStruct.tm_hour, tStruct.tm_min, tStruct.tm_sec);
+	
 	char *sysArg = calloc(strlen(action) + 22, sizeof(char)); // "<date> <action>\n\0" = 22 + strlen(action) characters
 	strcat(sysArg, currentDate);
 	strcat(sysArg, action);
 	strcat(sysArg, "\n");
+
 	write(f_log, sysArg, strlen(sysArg));
+	
 	close(f_log);
 	free(sysArg);
 }

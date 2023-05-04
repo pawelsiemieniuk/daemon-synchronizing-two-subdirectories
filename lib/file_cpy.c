@@ -10,12 +10,13 @@
 #include "dir_op.h"
 
 void createDir(char *pathname){
-    int path_len = strlen(pathname);
-    int dst_len = strlen(DST_NAME);
-    path_len -= dst_len;
-    
+    int path_len = (int)strlen(pathname);
+    int dst_len = (int)strlen(DST_NAME);
+
+    if(path_len==dst_len) { return; }
+
     char *dir = calloc(path_len, sizeof(char));
-    dir = DST_NAME;
+    strcat(dir, DST_NAME);
 
     for(int i=dst_len-1; i < path_len; i++){
         if(pathname[i] == '/'){
@@ -23,6 +24,8 @@ void createDir(char *pathname){
         }
         dir[i] = pathname[i];
     }
+    mkdir(dir, S_IRWXU | S_IRWXG | S_IRWXO);
+    free(dir);
 }
 
 void copyMap(char *path, f_info *finf)
@@ -39,26 +42,26 @@ void copyMap(char *path, f_info *finf)
     t_buf->modtime = finf->f_mtime;
     
 
-    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));
-    strcat(dst_path, DST_NAME);
+    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));  // Wyliczanie miejsca na scieżkę docelową
+    strcat(dst_path, DST_NAME);  // Dopisanie początku scieżki docelowej
     for (int i = strlen(SRC_NAME); i < strlen(path); i++)
     {
-        dst_path[i] = path[i];
+        dst_path[i] = path[i];// Dopisanie pośrednich katalogów
     }
     strcat(dst_path, "/");
-    strcat(dst_path, fname);
+    strcat(dst_path, fname);// Dopisanie nazwy pliku
     
     unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
 
-    src_map_pos = mmap(src_map_pos, fsize, PROT_READ, MAP_SHARED, src_fd, 0);
-    dst_map_pos = mmap(dst_map_pos, fsize, PROT_WRITE, MAP_SHARED, dst_fd, 0);
+    src_map_pos = mmap(src_map_pos, fsize, PROT_READ, MAP_SHARED, src_fd, 0);// Mapowanie pliku zrodlowego
+    dst_map_pos = mmap(dst_map_pos, fsize, PROT_WRITE, MAP_SHARED, dst_fd, 0);// Mapowanie pliku docelowego
 
-    printf("aaa\n\n");
-    memmove(dst_map_pos, src_map_pos, fsize);
+    //printf("aaa\n\n");
+    memcpy(dst_map_pos, src_map_pos, fsize);//Kopiowanie
 
-    printf("aaa\n\n");
-    munmap(src_map_pos, fsize);
+    //printf("aaa\n\n");
+    munmap(src_map_pos, fsize);//Usuwanie mapowania
     munmap(dst_map_pos, fsize);
 
     close(src_fd);
@@ -84,24 +87,24 @@ void copyNormal(char *path, f_info *finf)
     strcat(src_path, fname);
     
 
-    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));
-    strcat(dst_path, DST_NAME);
+    char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));// Wyliczanie miejsca na scieżkę docelową
+    strcat(dst_path, DST_NAME);// Dopisanie poczatku sciezki docelowej
     for (int i = strlen(SRC_NAME); i < strlen(path); i++)
-    {
+    {// Dopisanie pośrednich katalogów
         dst_path[i] = path[i];
     }
-    //createDir(dst_path);
-
+    if(dir_check){
+        createDir(dst_path);
+    }
 
     strcat(dst_path, "/");
-    strcat(dst_path, fname);
+    strcat(dst_path, fname);// Dopisanie nazwy pliku
 
     unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);
     
     read(src_fd, buffer, fsize);
     write(dst_fd, buffer, fsize);
-    
     
     close(src_fd);
     close(dst_fd);
