@@ -16,7 +16,7 @@ void logAction(char *action)
 
 	sprintf(currentDate, "%02d-%02d-%d %02d:%02d:%02d ", tStruct.tm_mday, tStruct.tm_mon + 1, tStruct.tm_year + 1900, tStruct.tm_hour, tStruct.tm_min, tStruct.tm_sec);
 	
-	char *sysArg = calloc(strlen(action) + 22, sizeof(char)); // "<date> <action>\n\0" = 22 + strlen(action) characters
+	char *sysArg = calloc(strlen(action) + 22, sizeof(char)); 
 	strcat(sysArg, currentDate);
 	strcat(sysArg, action);
 	strcat(sysArg, "\n");

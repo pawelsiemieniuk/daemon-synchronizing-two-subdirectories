@@ -7,8 +7,8 @@
 
 struct f_list *push(f_list *list_head, char *path, char *name, off_t size, time_t mod_time){
     f_list *head = list_head;
-    f_list *last = (struct f_list*)calloc(1, sizeof(f_list));
-    f_info *file_info = (struct f_info*)calloc(1, sizeof(f_info));
+    f_list *last = calloc(1, sizeof(f_list));
+    f_info *file_info = calloc(1, sizeof(f_info));
 
     file_info->f_size  = size;
     file_info->f_mtime = mod_time;
@@ -32,6 +32,7 @@ struct f_list *push(f_list *list_head, char *path, char *name, off_t size, time_
 
 void clean(f_list *list_head){
     if(!list_head) { return; }
+
 
     while(list_head->next){
         f_list *tmp = list_head->next;

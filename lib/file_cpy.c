@@ -49,16 +49,16 @@ void copyMap(char *path, f_info *finf)
     
 
     char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));  // Wyliczanie miejsca na scieżkę docelową
-    strcat(dst_path, DST_NAME);  // Dopisanie początku scieżki docelowej
+    strcat(dst_path, DST_NAME);
     for (int i = strlen(SRC_NAME); i < strlen(path); i++)
     {
-        dst_path[i] = path[i];// Dopisanie pośrednich katalogów
+        dst_path[i] = path[i];
     }
     if(F_SUBDIR){
         createDir(dst_path);
     }
     strcat(dst_path, "/");
-    strcat(dst_path, fname);// Dopisanie nazwy pliku
+    strcat(dst_path, fname);
     
 
     unsigned int src_fd = open(src_path, O_RDONLY);
@@ -70,12 +70,12 @@ void copyMap(char *path, f_info *finf)
     fstat(src_fd, &st);
     fchmod(dst_fd, st.st_mode);
 
-    src_map_pos = mmap(NULL, fsize, PROT_READ, MAP_SHARED, src_fd, 0);// Mapowanie pliku zrodlowego
-    dst_map_pos = mmap(NULL, fsize, PROT_READ | PROT_WRITE, MAP_SHARED, dst_fd, 0);// Mapowanie pliku docelowego
+    src_map_pos = mmap(NULL, fsize, PROT_READ, MAP_SHARED, src_fd, 0);
+    dst_map_pos = mmap(NULL, fsize, PROT_READ | PROT_WRITE, MAP_SHARED, dst_fd, 0);
 
-    memcpy(dst_map_pos, src_map_pos, fsize);//Kopiowanie
+    memcpy(dst_map_pos, src_map_pos, fsize);
 
-    munmap(src_map_pos, fsize);//Usuwanie mapowania
+    munmap(src_map_pos, fsize);
     munmap(dst_map_pos, fsize);
 
     close(src_fd);
@@ -104,9 +104,9 @@ void copyNormal(char *path, f_info *finf)
     
 
     char *dst_path = calloc(strlen(DST_NAME) + strlen(path) - strlen(SRC_NAME) + strlen(fname) + 2, sizeof(char));// Wyliczanie miejsca na scieżkę docelową
-    strcat(dst_path, DST_NAME);// Dopisanie poczatku sciezki docelowej
+    strcat(dst_path, DST_NAME);
     for (int i = strlen(SRC_NAME); i < strlen(path); i++)
-    {// Dopisanie pośrednich katalogów
+    {
         dst_path[i] = path[i];
     }
     if(F_SUBDIR){
@@ -114,7 +114,7 @@ void copyNormal(char *path, f_info *finf)
     }
 
     strcat(dst_path, "/");
-    strcat(dst_path, fname);// Dopisanie nazwy pliku
+    strcat(dst_path, fname);
 
     unsigned int src_fd = open(src_path, O_RDONLY);
     unsigned int dst_fd = open(dst_path, O_WRONLY | O_CREAT);

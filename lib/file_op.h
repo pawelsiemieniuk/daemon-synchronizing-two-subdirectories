@@ -1,6 +1,4 @@
-#include <dirent.h>
-
-#include "dir_op.h"
+#include "var.h"
 
 #ifndef FILE_OP
 #define FILE_OP

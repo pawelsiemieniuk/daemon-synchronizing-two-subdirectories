@@ -11,9 +11,9 @@
 #include "var.h"
 
 
-bool HasContents(char *dir_path){
+bool hasContents(char *dir_path){
         DIR *dir = opendir(dir_path);
-        if(readdir(dir) == NULL){ // czy katalog ma zawartosc
+        if(readdir(dir) == NULL){
                 closedir(dir);
                 return true;
         }
@@ -87,7 +87,7 @@ void cleanDir(f_list **dst_list){
 
                         delFile(file_path);
                         
-                        if(!HasContents(dir_path)){
+                        if(!hasContents(dir_path)){
                                 delDir(dir_path);
                         }
                         free(file_path);

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <signal.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <pthread.h>
 #include <sys/stat.h>
 #include <limits.h>
@@ -19,11 +20,13 @@
 #include "./lib/var.h"
 
 
-pthread_t *bed_t;               // wskaznik na strukture przechowujaca informacje o watku
+// Wskaznik na strukture przechowujaca informacje o watku
+pthread_t *bed_t;
 
-
+// Obsluga sygnalu
 void signalHandler(int sig) { if(sig == SIGUSR1) pthread_cancel(*bed_t); }
 
+// Funkcja zatrzymujaca dzialanie programu wywolywana jako watek
 void *bedThread() { sleep(SLEEP_TIME); }
 
 
@@ -45,7 +48,9 @@ int main(int argc, char **argv){
                 else if(!SRC_NAME){
                         DIR *src;
                         if((src = opendir(argv[i])) == NULL){
-                                mkdir(argv[i], S_IRWXU | S_IRWXG | S_IRWXO);
+                                printf("File at source path is not directory or does not exists.");
+                                closedir(src);
+                                return -1;
                         }
                         closedir(src);
 
@@ -54,7 +59,9 @@ int main(int argc, char **argv){
                 else if(!DST_NAME){
                         DIR *dst;
                         if((dst = opendir(argv[i])) == NULL){
-                                mkdir(argv[i], S_IRWXU | S_IRWXG | S_IRWXO);
+                                printf("File at destination path is not directory or does not exists.");
+                                closedir(dst);
+                                return -1;
                         }
                         closedir(dst);
                         DST_NAME = realpath(argv[i], NULL);
