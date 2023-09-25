@@ -5,7 +5,7 @@
 
 #include "dir_op.h"
 
-struct f_list *push(f_list *list_head, char *path, char *name, off_t size, time_t mod_time){
+f_list *push(f_list *list_head, char *path, char *name, off_t size, time_t mod_time){
     f_list *head = list_head;
     f_list *last = calloc(1, sizeof(f_list));
     f_info *file_info = calloc(1, sizeof(f_info));
@@ -16,16 +16,16 @@ struct f_list *push(f_list *list_head, char *path, char *name, off_t size, time_
 
 
     last->checked = false;
-    last->file_i  = file_info;
+    last->file_i  = (struct f_info*)file_info;
     last->next    = NULL;    
     last->path    = calloc(strlen(path) + 1, sizeof(char));
     strcat(last->path, path);
     
     if(!list_head){ return last; }
 
-    while(head->next){ head = head->next; }
+    while(head->next){ head = (f_list*)head->next; }
 
-    head->next = last;
+    head->next = (struct f_list*)last;
 
     return list_head;
 }
@@ -35,7 +35,7 @@ void clean(f_list *list_head){
 
 
     while(list_head->next){
-        f_list *tmp = list_head->next;
+        f_list *tmp = (f_list*)list_head->next;
         free(list_head->path);
         free(list_head->file_i);
         free(list_head);

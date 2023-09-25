@@ -66,8 +66,8 @@ void copyDir(f_list **src_list){
         f_list *tmp_list = (*src_list);
         while(tmp_list){
                 if(!(tmp_list->checked))
-                        copyFile(tmp_list->path, tmp_list->file_i);
-                tmp_list = tmp_list->next;
+                        copyFile(tmp_list->path, (f_info*)tmp_list->file_i);
+                tmp_list = (f_list*)tmp_list->next;
         }
 }
 
@@ -77,7 +77,7 @@ void cleanDir(f_list **dst_list){
         {
                 if(!tmp_list->checked)
                 {
-                        f_info *tmp_file = tmp_list->file_i;
+                        f_info *tmp_file = (f_info*)tmp_list->file_i;
                         char *file_path = calloc(strlen(tmp_list->path) + strlen(tmp_file->f_name) + 2, sizeof(char));
                         char *dir_path = calloc(strlen(tmp_list->path) + 1, sizeof(char));
                         
@@ -95,7 +95,7 @@ void cleanDir(f_list **dst_list){
                         free(file_path);
                         free(dir_path);                                
                 }
-                tmp_list = tmp_list->next;
+                tmp_list = (f_list*)tmp_list->next;
         }
 }
 

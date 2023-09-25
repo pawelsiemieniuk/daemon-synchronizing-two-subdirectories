@@ -27,17 +27,17 @@ void fileListCompare(f_list **src_list, f_list **dst_list){
     while(src){
         while(dst){
             if(!dst->checked){
-                f_i = src->file_i;
-                d_i = dst->file_i;
-                if(fileCompare(src->file_i, dst->file_i)){
+                f_i = (f_info*)src->file_i;
+                d_i = (f_info*)dst->file_i;
+                if(fileCompare((f_info*)src->file_i, (f_info*)dst->file_i)){
                     src->checked = true;
                     dst->checked = true;
                 }
             }
-            dst = dst->next;
+            dst = (f_list*)dst->next;
         }
         dst = (*dst_list);
-        src = src->next;
+        src = (f_list*)src->next;
     }
 }
 
