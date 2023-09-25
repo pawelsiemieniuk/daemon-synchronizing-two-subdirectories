@@ -4,7 +4,7 @@
 ## Build
 ```
 # Clone this repository
-$ git clone https://github.com/sync2d.git
+$ git clone https://github.com/pawelsiemieniuk/sync2d.git
 
 # Go into the repository
 $ cd sync2d
