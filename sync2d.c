@@ -31,6 +31,7 @@ void *bedThread() { sleep(SLEEP_TIME); }
 
 
 int main(int argc, char **argv){
+
         struct sigaction *new_act = calloc(1, sizeof(struct sigaction));
         new_act->sa_handler = signalHandler;
 
@@ -77,6 +78,17 @@ int main(int argc, char **argv){
             return -1;
         }
         
+
+        pid_t id = fork();
+
+        if(id == -1){
+                printf("Couldn't create child process.");
+                return -1;
+        }
+        else if(id){
+                return 0;
+        }
+
 
         f_list *src_list;
         f_list *dst_list;

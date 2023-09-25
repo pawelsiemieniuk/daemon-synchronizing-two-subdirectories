@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [ "$1" ]
+PID=`pidof sync2d`
+
+if [[ -z $PID ]]
 then
-	PID=`pidof $1`
-	kill -s SIGUSR1 $PID
+	echo "sync2d isn't running."
 else
-	PID=`pidof daemon`
 	kill -s SIGUSR1 $PID
 fi

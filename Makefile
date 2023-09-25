@@ -2,7 +2,7 @@
 
 CC=gcc
 
-FILENAME=daemon
+FILENAME=sync2d
 BINDIR=bin/
 DIRS=. ./lib
 FLAGS= -pthread

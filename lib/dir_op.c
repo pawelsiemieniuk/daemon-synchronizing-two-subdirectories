@@ -24,6 +24,8 @@ bool hasContents(char *dir_path){
 void readDir(f_list **list, char *pathname)
 {
         DIR *dir = opendir(pathname);
+        if(dir == NULL) { return; }
+
         struct dirent *read_file;
 
         while((read_file = readdir(dir)) != NULL)
